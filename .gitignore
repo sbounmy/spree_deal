@@ -1,0 +1,15 @@
+\#*
+*~
+.#*
+.DS_Store
+.idea
+.project
+tmp
+nbproject
+*.swp
+spec/dummy
+Gemfile.lock
+.sass-cache
+.bundle
+.rspec
+.rvmrc
