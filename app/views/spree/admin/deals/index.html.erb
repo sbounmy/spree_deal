@@ -17,6 +17,9 @@
     <th><%= t(:description) %></th>
     <th><%= t(:minimum_quantity) %></th>
     <th><%= t(:product_name) %></th>
+    <th><%= t(:product_list_price) %></th>
+    <th><%= t(:product_price) %></th>
+    <th><%= t(:product_deal) %></th>
     <th data-hook="admin_deals_index_header_actions"></th>
   </tr>
 <% @collection.each do |deal| %>
@@ -25,6 +28,9 @@
     <td><%= deal.description %></td>
     <td><%= deal.minimum_quantity %></td>
     <td><%= deal.product.name %></td>
+    <td><%= deal.product.list_price %></td>
+    <td><%= deal.product.price %></td>
+    <td><%= number_to_percentage(deal.product.deal_percent, :precision => 0) %></td>
     <td>
       <%= link_to_edit deal %> &nbsp;
       <%= link_to_delete deal %>

@@ -3,3 +3,7 @@
 <%= form_for [:admin, @deal] do |f| %>
   <%= render f %>
 <% end %>
+
+<%= form_for [:admin, @deal.product] do |f| %>
+  <%= render "form_product", :form => f %>
+<% end %>

@@ -27,9 +27,13 @@ feature "deals feature", :js => true do
     page.should have_content('Deal "Ror Mug Hot deal !" has been successfully created!')
   end
 
-  scenario "admin can edit deal without errors" do
+  scenario "admin can edit deal price" do
     click_link "Edit"
-    click_button "Create"
-    page.should have_content('Deal "Ror Mug Hot deal !" has been successfully updated!')
+    fill_in "List Price", :with => "40"
+    fill_in "Price", :with => "30"
+    click_button "Update"
+
+    visit spree.admin_deals_path
+    page.should have_content("25%")
   end
 end
