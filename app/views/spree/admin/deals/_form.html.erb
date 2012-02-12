@@ -1,39 +1,39 @@
 <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @deal } %>
+<fieldset id="general_fields">
+  <legend><%= t(:general) %></legend>
 
-  <fieldset id="expiry_fields">
-    <legend><%= t(:expiry) %></legend>
+  <%= form.field_container :name do %>
+    <%= form.label :name %><br />
+    <%= form.text_field :name %>
+  <% end %>
 
-    <%= form.field_container :name do %>
-      <%= form.label :name %><br />
-      <%= form.text_field :name %>
-    <% end %>
+  <%= form.field_container :description do %>
+    <%= form.label :description %><br />
+    <%= form.text_area :description, :style => 'height:50px;' %>
+  <% end %>
 
-    <p id="starts_at_field">
-      <%= form.label :starts_at %>
-      <%= form.text_field :starts_at, :class => 'datepicker' %>
-    </p>
-    <p id="expires_at_field">
-      <%= form.label :expires_at %>
-      <%= form.text_field :expires_at, :class => 'datepicker' %>
-    </p>
-  </fieldset>
   <%= t('product_rule.choose_products') %><br />
-  <%= calculator_form.label :product, t(:product) %><br />
+  <%= form.label :product, t(:product) %><br />
   <%= product_picker_field "#{form.object_name}[product_id]", form.object.product_id.to_s %>
 
   <%= form.field_container :minimum_quantity do %>
     <%= form.label :minimum_quantity, t(:minimum_quantity) %><br />
     <%= form.text_field :minimum_quantity %>
   <% end %>
+</fieldset>
+
+<fieldset id="expiry_fields">
+  <legend><%= t(:expiry) %></legend>
 
 
-<fieldset id="general_fields">
-  <legend><%= t(:general) %></legend>
-
-  <%= form.field_container :description do %>
-    <%= form.label :description %><br />
-    <%= form.text_area :description, :style => 'height:50px;' %>
-  <% end %>
+  <p id="starts_at_field">
+    <%= form.label :starts_at %>
+    <%= form.text_field :starts_at, :class => 'datepicker' %>
+  </p>
+  <p id="expires_at_field">
+    <%= form.label :expires_at %>
+    <%= form.text_field :expires_at, :class => 'datepicker' %>
+  </p>
 </fieldset>
 
 <%= form.submit "Create" %>
