@@ -1,3 +1,7 @@
 /*
  *= require store/spree_core
 */
+.price.list {
+  text-decoration: line-through;
+  color: red;
+}

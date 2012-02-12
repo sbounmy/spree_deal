@@ -6,7 +6,7 @@ describe Spree::Product do
       product = Factory(:product, :price => 70, :list_price => 100)
       product.list_price.should == 100
       product.price.should == 70
-      product.deal_percent.to_f.should == 30
+      product.deal_percent.to_f.should == -30
       product.deal_amount.to_f.should == 30
     end
 

@@ -1,0 +1,9 @@
+<li id="deal_<%= deal.id %>" class="columns three" data-hook="deals_list_item" itemscope itemtype="http://schema.org/deal">
+  <div class="deal-image">
+    <%= link_to small_image(deal.product, :itemprop => "name"), deal %>
+  </div>
+  <%= link_to deal.name, deal, :class => 'info', :itemprop => "name" %>
+  <span class="price selling" itemprop="price"><%= number_to_currency deal.price %></span>
+  <span class="price list" itemprop="price"><%= number_to_currency deal.list_price %></span>
+  <span class="price selling" itemprop="price"><%= number_to_percentage deal.percent, :precision => 0 %></span>
+</li>

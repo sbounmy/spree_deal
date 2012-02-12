@@ -1,0 +1,48 @@
+<h1><%= @deal.name %></h1>
+<div data-hook="product_show" itemscope itemtype="http://schema.org/Product">
+  <% @body_id = 'product-details' %>
+
+  <div class="columns six alpha">
+    <div class="row">
+
+      <div id="product-images" data-hook="product_images">
+        <div id="main-image" data-hook>
+          <%= render :partial => 'spree/products/image' %>
+        </div>
+        <div id="thumbnails" data-hook>
+          <%= render :partial => 'spree/products/thumbnails', :locals => { :product => @product } %>
+        </div>
+      </div>
+      <hr class="clear"/>
+      <div data-hook="product_properties">
+        <%= render :partial => 'spree/products/properties' %>
+      </div>
+      <%= @deal.left_quantity %> needed for this deal to go live!
+    </div>
+  </div>
+
+  <div class="columns ten omega">
+    <div class="row">
+
+      <div id="product-description" data-hook="product_description">
+
+        <h1 class="product-title" itemprop="name"><%= accurate_title %></h1>
+
+        <div itemprop="description">
+          <%= product_description(@product) rescue t(:product_has_no_description) %>
+        </div>
+
+        <div id="cart-form" data-hook="cart_form">
+          <%= render :partial => 'spree/products/cart_form' %>
+        </div>
+
+      </div>
+
+
+
+      <%= render :partial => 'spree/products/taxons' %>
+
+    </div>
+  </div>
+
+</div>
