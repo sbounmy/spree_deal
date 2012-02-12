@@ -3,6 +3,8 @@ class Spree::Deal < ActiveRecord::Base
   belongs_to :product
   delegate_belongs_to :product, :list_price, :price
 
+  before_create :complete_orders
+
   def percent
     product.deal_percent
   end
@@ -10,4 +12,9 @@ class Spree::Deal < ActiveRecord::Base
   def left_quantity
     minimum_quantity
   end
+
+  def complete_orders
+
+  end
+  handle_asynchronously :complete_orders, :run_at => Proc.new { |deal| deal.expires_at }
 end

@@ -4,6 +4,7 @@ Factory.define :deal, :class => Spree::Deal do |d|
   d.description "brand new deal !"
   d.starts_at Date.yesterday
   d.expires_at  1.week.from_now
+  d.product { |p| p.association(:product) }
 end
 
 # Factory.define :create_deal_adjustment, :class => Spree::Deal::Actions::CreateDealAdjustment do |c|

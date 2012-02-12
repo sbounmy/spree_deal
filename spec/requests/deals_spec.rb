@@ -55,11 +55,10 @@ feature "deals feature", :js => true do
       fill_in "List Price", :with => "40"
       fill_in "Price", :with => "10"
       click_button "Update"
-
-      visit spree.deals_path
     end
 
     scenario "customer can purchase it" do
+      visit spree.deals_path
       # list price
       page.should have_content("$40")
       # discount price
@@ -95,5 +94,37 @@ feature "deals feature", :js => true do
       Spree::Order.last.item_total.should == 10
       Spree::Order.last.adjustments.promotion.map(&:amount).sum.to_f.should == 0
     end
+
+    scenario "customer can purchase it at list_price when deal is over" do
+      Timecop.travel(2.months.from_now)
+      visit spree.product_path(@mug)
+      # list price
+      page.should have_content("$40")
+      # discount price
+      page.should_not have_content("$10")
+      # discount
+      page.should_not have_content("-75%")
+      page.should_not have_content("Hot deal !")
+      # page.should have_content("200 needed for the deal to go live!")
+
+      click_button "Add To Cart"
+
+      within("#subtotal") do
+        page.should have_content("$40.00")
+      end
+      within("#line_items") do
+        within("td[data-hook='cart_item_price']") do
+          page.should have_content("$40")
+        end
+        within("td[data-hook='cart_item_total']") do
+          page.should have_content("$40")
+        end
+      end
+      complete_order
+      Spree::Order.last.item_total.should == 40
+      Spree::Order.last.adjustments.promotion.map(&:amount).sum.to_f.should == 0
+      Timecop.return
+    end
+
   end
 end

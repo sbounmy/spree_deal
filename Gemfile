@@ -8,6 +8,7 @@ group :test do
   gem 'database_cleaner'
   gem 'shoulda'
   gem 'rspec-rails'
+  gem 'timecop'
 end
 
 group :assets do
