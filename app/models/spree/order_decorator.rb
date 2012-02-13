@@ -1,5 +1,8 @@
 module Spree
   Order.class_eval do
+
+    scope :deal_pending, where(:state => "deal_pending")
+
     # Additional state 'pending', other are copy paste from core/app/models/spree/order.rb
     Spree::Order.state_machines[:state] = StateMachine::Machine.new(Spree::Order, :initial => 'cart', :use_transactions => false) do
 

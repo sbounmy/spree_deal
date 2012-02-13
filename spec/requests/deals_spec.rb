@@ -33,6 +33,7 @@ feature "deals feature", :js => true do
     fill_in "card_number", :with => "4111111111111111"
     fill_in "card_code", :with => "123"
     click_button "Save and Continue"
+    click_button "Place Order"
   end
 
   context "there is a valid deal" do
@@ -90,8 +91,16 @@ feature "deals feature", :js => true do
         end
       end
       complete_order
+
       Spree::Order.last.item_total.should == 10
       Spree::Order.last.adjustments.promotion.map(&:amount).sum.to_f.should == 0
+
+      visit spree.admin_deals_path
+      click_link "Edit"
+      within "ul.sidebar[data-hook='admin_deal_tabs']" do
+        click_link "Orders"
+      end
+      page.should have_content("$20")
     end
 
     scenario "customer can purchase it at list_price when deal is over" do
