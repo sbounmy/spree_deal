@@ -5,6 +5,9 @@ class Spree::Deal < ActiveRecord::Base
 
   before_create :complete_orders
 
+  scope :active, where("starts_at <= ? AND expires_at > ?", Time.now, Time.now)
+  scope :for, lambda { |product| where(:product_id => product.try(:id)) }
+
   def percent
     product.deal_percent
   end
