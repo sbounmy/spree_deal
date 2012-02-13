@@ -29,7 +29,6 @@ feature "deals feature", :js => true do
     check "order_use_billing"
     click_button "Save and Continue"
     click_button "Save and Continue"
-
     choose('Credit Card')
     fill_in "card_number", :with => "4111111111111111"
     fill_in "card_code", :with => "123"

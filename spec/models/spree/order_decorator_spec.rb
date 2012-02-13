@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Spree::Order do
   let(:order) { Factory(:order) }
   let(:deal) { Factory(:deal) }
+  let(:product) { deal.product }
 
   context "#next" do
     context "when current state is confirm" do
@@ -11,7 +12,7 @@ describe Spree::Order do
       context "order has deal" do
         before do
           deal
-          order.add_variant(deal.product.master, 1)
+          order.add_variant(product.master, 1)
         end
 
         it "should transition to deal_pending state" do
@@ -46,7 +47,7 @@ describe Spree::Order do
       it "when there are at least 1 product with active deals" do
         deal
         order.add_variant(Factory(:product).master, 1)
-        order.add_variant(deal.product.master, 1)
+        order.add_variant(product.master, 1)
         order.contains_deal?.should be_true
       end
     end
@@ -54,7 +55,7 @@ describe Spree::Order do
     context "returns false" do
       it "when there are product with no active deals" do
         deal.update_attributes(:starts_at => 2.weeks.ago, :expires_at => 1.week.ago)
-        order.add_variant(deal.product.master, 1)
+        order.add_variant(product.master, 1)
         order.contains_deal?.should be_false
       end
 
