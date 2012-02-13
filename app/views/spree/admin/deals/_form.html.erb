@@ -14,7 +14,7 @@
 
   <%= t('product_rule.choose_products') %><br />
   <%= form.label :product, t(:product) %><br />
-  <%= product_picker_field "#{form.object_name}[product_id]", form.object.product_id.to_s %>
+  <%= product_picker_field "#{form.object_name}[original_product_id]", form.object.product_id.to_s %>
 
   <%= form.field_container :minimum_quantity do %>
     <%= form.label :minimum_quantity, t(:minimum_quantity) %><br />
