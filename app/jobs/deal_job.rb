@@ -1,9 +1,7 @@
 module Spree
   class DealJob < Struct.new(:deal_id)
     def perform
-      deal.orders.each do |order|
-        order.deal_complete
-      end
+      DealMailer.expiration_email(deal).deliver
     end
 
     def deal

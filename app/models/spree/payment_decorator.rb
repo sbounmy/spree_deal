@@ -4,7 +4,7 @@ Spree::Payment.class_eval do
       if source
         if !processing? && source.respond_to?(:process!)
           started_processing!
-          source.process!(self, !order.contains_deal?) # source is responsible for updating the payment state when it's done processing
+          source.process!(self, !order.has_active_deal?) # source is responsible for updating the payment state when it's done processing
         end
       else
         raise Core::GatewayError.new(I18n.t(:payment_processing_failed))

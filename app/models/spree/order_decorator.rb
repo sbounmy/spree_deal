@@ -48,7 +48,7 @@ module Spree
       end
 
       after_transition :to => 'complete', :do => :finalize!
-      after_transition :to => 'complete', :do => :deal_pending!, :if => :contains_deal?
+      after_transition :to => 'complete', :do => :deal_pending!, :if => :has_active_deal?
 
       after_transition :to => 'delivery', :do => :create_tax_charge!
       after_transition :to => 'payment',  :do => :create_shipment!
@@ -56,7 +56,7 @@ module Spree
       after_transition :to => 'canceled', :do => :after_cancel
     end
 
-    def contains_deal?
+    def has_active_deal?
       Deal.active.where(:product_id => products.collect(&:id)).exists?
     end
   end

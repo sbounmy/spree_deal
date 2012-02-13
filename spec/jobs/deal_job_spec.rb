@@ -4,16 +4,16 @@ describe Spree::DealJob do
   let(:deal) { Factory(:deal) }
   let(:order) { Factory(:order) }
   let(:product) { deal.product }
+  let(:admin) { Factory(:admin_user, :email => "admin@spree.com") }
 
   describe "#perform" do
-
-    it "set order's line_item.deal_id to allow tracking" do
+    before do
+      admin
+    end
+    it "sends an email to admins" do
       order.add_variant(product.master, 1)
       job = Spree::DealJob.new(deal.id)
-      job.perform
-      # # expect { deal.complete_orders! }.to change { order.line_items.collect(&:deal_id).compact }.from([]).to([deal.id])
-      # Timecop.travel(deal.expires_at + 1.minutes) { Delayed::Worker.new.work_off }
-      # deal.complete_orders!
+      expect { job.perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
   end
 

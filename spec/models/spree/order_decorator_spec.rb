@@ -29,40 +29,40 @@ describe Spree::Order do
 
         it "should transition to complete state" do
           order.next!
-          order.contains_deal?.should be_false
+          order.has_active_deal?.should be_false
           order.state.should == "complete"
         end
       end
     end
   end
 
-  context "#contains_deal?" do
+  context "#has_active_deal?" do
     context "returns true" do
       it "when there are product with active deals" do
         deal
         order.add_variant(deal.product.master, 1)
-        order.contains_deal?.should be_true
+        order.has_active_deal?.should be_true
       end
 
       it "when there are at least 1 product with active deals" do
         deal
         order.add_variant(Factory(:product).master, 1)
         order.add_variant(product.master, 1)
-        order.contains_deal?.should be_true
+        order.has_active_deal?.should be_true
       end
     end
 
     context "returns false" do
       it "when there are product with no active deals" do
-        deal.update_attributes(:starts_at => 2.weeks.ago, :expires_at => 1.week.ago)
+        deal.update_attributes!(:starts_at => 2.weeks.ago, :expires_at => 1.week.ago)
         order.add_variant(product.master, 1)
-        order.contains_deal?.should be_false
+        order.has_active_deal?.should be_false
       end
 
       it "when there are product with no deals" do
         deal
         order.add_variant(Factory(:product).master, 1)
-        order.contains_deal?.should be_false
+        order.has_active_deal?.should be_false
       end
 
     end

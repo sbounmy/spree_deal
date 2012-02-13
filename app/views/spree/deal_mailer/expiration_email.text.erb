@@ -1,0 +1,20 @@
+Dear Admin,
+
+This deal is expired.
+
+<% if @deal.met? %>
+Deal is valid with <%= @deal.count_quantity -%> / <%= @deal.minimum_quantity -%>.
+<% else %>
+Deal is not valid with <%= @deal.count_quantity -%> / <%= @deal.minimum_quantity -%>.
+<% end %>
+
+============================================================
+Deal Summary [<%= @deal.met? ? "VALID" : "INVALID" -%>]
+============================================================
+============================================================
+
+Deal: <%= @deal.name -%> <%= admin_deal_url(@deal) %>
+Start at: <%= @deal.starts_at %>
+Expire at: <%= @deal.expires_at %>
+Product: <%= @deal.product.name %>
+
