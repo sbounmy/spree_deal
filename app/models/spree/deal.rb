@@ -6,7 +6,7 @@ module Spree
     delegate_belongs_to :product, :list_price, :price
 
     before_validation :set_original_product_id
-    before_create :enqueue_expiration_job
+    after_create :enqueue_expiration_job
     before_create :duplicate_original_product, :if => :new_product?
 
     after_save   :enqueue_start_job, :if => "starts_at_changed? and !active?"

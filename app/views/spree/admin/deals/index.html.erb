@@ -23,7 +23,7 @@
     <th data-hook="admin_deals_index_header_actions"></th>
   </tr>
 <% @collection.each do |deal| %>
-  <tr <%= "style='color: red;'" if deal %> id="<%= dom_id deal %>" data-hook="admin_deals_index_rows">
+  <tr <%= "style='color: red;'" unless deal.met? %> id="<%= dom_id deal %>" data-hook="admin_deals_index_rows">
     <td><%= deal.name %></td>
     <td><%= deal.description %></td>
     <td><%= deal.minimum_quantity %></td>
@@ -34,6 +34,7 @@
     <td>
       <%= link_to_edit deal %> &nbsp;
       <%= link_to_delete deal %>
+      <%= button_link_to "Confirm", confirm_admin_deal_path(deal), :method => :put, :confirm => t(:are_you_sure) if deal.expired? %>
     </td>
   </tr>
 <% end %>

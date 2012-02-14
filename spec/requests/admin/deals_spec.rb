@@ -36,4 +36,19 @@ feature "deals feature", :js => true do
     visit spree.admin_deals_path
     page.should have_content("25%")
   end
+
+  context "when deal expires" do
+    before do
+      Timecop.travel(1.week.from_now + 1.minutes)
+      Delayed::Worker.new.work_off
+    end
+
+    after { Timecop.return }
+
+    scenario "admin can confirm deal" do
+      visit spree.admin_deals_path
+      click_button "Confirm"
+    end
+  end
+
 end

@@ -10,5 +10,11 @@ module Spree::Admin
     def new
       @deal = Spree::Deal.new
     end
+
+    def confirm
+      @deal = Spree::Deal.find(params[:id])
+      @deal.confirm
+      redirect_to admin_deals_path
+    end
   end
 end
