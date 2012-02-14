@@ -75,13 +75,12 @@ describe Spree::Deal do
       deal.product.should == product
     end
   end
-  describe "#complete_orders" do
 
-    it "set order's line_item.deal_id to allow tracking" do
-      order.add_variant(product.master, 1)
-      # expect { deal.complete_orders! }.to change { order.line_items.collect(&:deal_id).compact }.from([]).to([deal.id])
-      Timecop.travel(deal.expires_at + 1.minutes) { Delayed::Worker.new.work_off }
-      # deal.complete_orders!
+  describe "on complete" do
+    it "push a confirmjob to the queue" do
+      deal.expire!
+      Delayed::Worker.new.work_off
+      expect { deal.confirm! }.to change(Delayed::Job, :count).by(1)
     end
   end
 end

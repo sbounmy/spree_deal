@@ -13,7 +13,7 @@ module Spree::Admin
 
     def confirm
       @deal = Spree::Deal.find(params[:id])
-      @deal.confirm
+      flash.notice = t("deal.complete") if @deal.confirm
       redirect_to admin_deals_path
     end
   end

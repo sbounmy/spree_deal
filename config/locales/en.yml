@@ -6,3 +6,7 @@ en:
   deal_mailer:
     expiration_email:
       subject: "Deal expires !"
+    confirmation_email:
+      subject: "Deal complete !"
+  deal:
+    complete: "Deal successfully complete"

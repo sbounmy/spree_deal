@@ -48,6 +48,7 @@ feature "deals feature", :js => true do
     scenario "admin can confirm deal" do
       visit spree.admin_deals_path
       click_button "Confirm"
+      page.should have_content("Deal successfully complete")
     end
   end
 

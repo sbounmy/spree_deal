@@ -5,9 +5,9 @@ describe Spree::DealMailer do
   let(:order) { Factory(:order) }
   let(:product) { deal.product }
   let(:admin) { Factory(:admin_user, :email => "admin@spree.com") }
-  let(:email) { Spree::DealMailer.expiration_email(deal).deliver }
 
   describe "#expiration_email" do
+    let(:email) { Spree::DealMailer.expiration_email(deal).deliver }
     before do
       admin
       order.state = "confirm"
@@ -34,4 +34,28 @@ describe Spree::DealMailer do
       email.encoded.should =~ /Deal is valid with 4 \/ 3/
     end
   end
+
+  describe "#confirmation_email" do
+    let(:customer) { order.user }
+    let(:email) { Spree::DealMailer.confirmation_email(:order => order, :deal => deal).deliver }
+
+    before do
+      order.add_variant(product.master, 3)
+      order.state = "confirm"
+      order.next!
+      ActionMailer::Base.deliveries = []
+    end
+
+    it "sends an email to customer" do
+      email.to.should == [order.email]
+      ActionMailer::Base.deliveries.should_not be_empty
+    end
+
+    it "shows deal complete information" do
+      email.encoded.should =~ /The deal #{deal.name} is complete !/
+      email.encoded.should =~ /Product: #{deal.product.name}/
+      email.encoded.should =~ /Quantity: 3/
+    end
+  end
+
 end

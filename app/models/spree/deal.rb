@@ -26,7 +26,7 @@ module Spree
       end
 
       event :confirm do
-        transition :from => 'expired', :to => 'confirmed'
+        transition :from => 'expired', :to => 'complete'
       end
 
       event :void do
@@ -34,6 +34,7 @@ module Spree
       end
 
       after_transition :to => 'expired', :do => :notify_admin
+      after_transition :to => 'complete', :do => :enqueue_confirm_job
     end
 
     def notify_admin
@@ -66,9 +67,13 @@ module Spree
       end
     end
 
+    def enqueue_confirm_job
+      Delayed::Job.enqueue(Deals::ConfirmJob.new(id))
+    end
+
     #TODO optimize this by sql join
     def orders
-      @orders ||= Order.deal_pending.select { |order| order.products.collect(&:id).include?(product_id) }
+      @orders ||= Order.deal_pending.select { |order| order.inventory_units.collect(&:variant).collect(&:product_id).include?(product_id) }
     end
 
     def order_ids

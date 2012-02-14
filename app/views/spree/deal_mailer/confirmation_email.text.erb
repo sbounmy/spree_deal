@@ -1,0 +1,15 @@
+Dear <%= @order.name %>,
+
+Great news !
+
+The deal <%= @deal.name -%> is complete !
+
+Your order <%= @order.number -%> is being processed.
+You will receive an email in the next few days when your deal get shipped.
+
+Product: <%= @deal.product.name %>
+Quantity: <%= @order.inventory_units.for_product(@deal.product).count %>
+
+If your order contains many different deals, we will proceed them
+
+Thanks,
