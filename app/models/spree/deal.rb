@@ -6,14 +6,39 @@ module Spree
     delegate_belongs_to :product, :list_price, :price
 
     before_validation :set_original_product_id
-    before_create :enqueue_job
+    before_create :enqueue_expiration_job
     before_create :duplicate_original_product, :if => :new_product?
 
+    after_save   :enqueue_start_job, :if => "starts_at_changed? and !active?"
     before_update :duplicate_original_product_and_destroy_old, :if => :new_product?
     attr_accessor :original_product_id
 
-    scope :active, where("starts_at <= ? AND expires_at > ?", Time.now.to_s(:db), Time.now.to_s(:db))
+    scope :active, where(:state => "active")
     scope :for, lambda { |product| where(:product_id => product.try(:id)) }
+
+    state_machine :initial => 'created', :use_transactions => false do
+      event :expire do
+        transition :from => 'active', :to => 'expired'
+      end
+
+      event :start do
+        transition :from => 'created', :to => 'active', :if => "starts_at <= Time.now"
+      end
+
+      event :confirm do
+        transition :from => 'expired', :to => 'confirmed'
+      end
+
+      event :void do
+        transition :from => 'expired', :to => 'void'
+      end
+
+      after_transition :to => 'expired', :do => :notify_admin
+    end
+
+    def notify_admin
+      DealMailer.expiration_email(self).deliver
+    end
 
     def percent
       product.deal_percent
@@ -31,8 +56,14 @@ module Spree
       minimum_quantity - count_quantity
     end
 
-    def enqueue_job
-      Delayed::Job.enqueue(DealJob.new(id), :run_at => expires_at)
+    def enqueue_expiration_job
+      Delayed::Job.enqueue(Deals::ExpireJob.new(id), :run_at => expires_at)
+    end
+
+    def enqueue_start_job
+      unless start
+        Delayed::Job.enqueue(Deals::StartJob.new(id), :run_at => starts_at)
+      end
     end
 
     #TODO optimize this by sql join

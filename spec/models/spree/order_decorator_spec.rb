@@ -54,7 +54,7 @@ describe Spree::Order do
 
     context "returns false" do
       it "when there are product with no active deals" do
-        deal.update_attributes!(:starts_at => 2.weeks.ago, :expires_at => 1.week.ago)
+        deal.expire!
         order.add_variant(product.master, 1)
         order.has_active_deal?.should be_false
       end

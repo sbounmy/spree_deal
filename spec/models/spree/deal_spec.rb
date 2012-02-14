@@ -29,6 +29,36 @@ describe Spree::Deal do
       @deal.new_record?.should be_true
       @deal.product.should be_nil
     end
+
+    context "when starts_at in the future" do
+      let(:deal_attrs) { Factory.attributes_for(:deal, :starts_at => 1.day.from_now, :original_product_id => Factory(:product).id) }
+      it "pushes a second job" do
+        expect { Spree::Deal.create(deal_attrs) }.to change(Delayed::Job, :count).by(2)
+      end
+
+      it "starts the deal when only when it is reached" do
+        @deal = Spree::Deal.new(deal_attrs)
+        expect do
+          @deal.save!
+          Timecop.freeze(@deal.starts_at + 1.minutes) { Delayed::Worker.new.work_off }
+          @deal.reload
+        end.to change(@deal, :state).from("created").to("active")
+      end
+
+      it "starts the deal when only when it is reached" do
+        @deal = Spree::Deal.new(deal_attrs)
+        expect do
+          init_date = @deal.starts_at
+          @deal.save!
+          @deal.update_attributes :starts_at => init_date + 1.day
+          Timecop.freeze(init_date) { Delayed::Worker.new.work_off }
+          @deal.reload.state.should == "created"
+          Timecop.freeze(@deal.starts_at) { Delayed::Worker.new.work_off }
+          @deal.reload
+        end.to change(@deal, :state).from("created").to("active")
+      end
+
+    end
   end
 
   describe "on update" do

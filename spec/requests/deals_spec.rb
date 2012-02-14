@@ -103,9 +103,10 @@ feature "deals feature", :js => true do
       page.should have_content("$20")
     end
 
-    scenario "customer can purchase it at list_price when deal is over" do
+    scenario "customer can't purchase it when deal is over" do
       Timecop.travel(2.months.from_now)
-      visit spree.product_path(@mug)
+      visit spree.deals_path
+      save_and_open_page
       # list price
       page.should have_content("$40")
       # discount price
