@@ -13,3 +13,6 @@ Gemfile.lock
 .bundle
 .rspec
 .rvmrc
+.bundle
+Gemfile.lock
+
