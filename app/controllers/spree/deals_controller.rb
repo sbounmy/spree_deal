@@ -4,7 +4,7 @@ module Spree
     HTTP_REFERER_REGEXP = /^https?:\/\/[^\/]+\/t\/([a-z0-9\-\/]+)$/
 
     def index
-      @deals = Deal.all
+      @deals = Deal.active.all
     end
 
     def show

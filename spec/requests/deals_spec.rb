@@ -105,33 +105,17 @@ feature "deals feature", :js => true do
 
     scenario "customer can't purchase it when deal is over" do
       Timecop.travel(2.months.from_now)
+      Delayed::Worker.new.work_off
       visit spree.deals_path
       save_and_open_page
       # list price
-      page.should have_content("$40")
+      page.should_not have_content("$40")
       # discount price
       page.should_not have_content("$10")
       # discount
       page.should_not have_content("-75%")
       page.should_not have_content("Hot deal !")
       # page.should have_content("200 needed for the deal to go live!")
-
-      click_button "Add To Cart"
-
-      within("#subtotal") do
-        page.should have_content("$40.00")
-      end
-      within("#line_items") do
-        within("td[data-hook='cart_item_price']") do
-          page.should have_content("$40")
-        end
-        within("td[data-hook='cart_item_total']") do
-          page.should have_content("$40")
-        end
-      end
-      complete_order
-      Spree::Order.last.item_total.should == 40
-      Spree::Order.last.adjustments.promotion.map(&:amount).sum.to_f.should == 0
       Timecop.return
     end
 
