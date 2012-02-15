@@ -3,6 +3,12 @@ SpreeDeal
 
 Introduction goes here.
 
+Install
+=======
+
+Migrations
+----------
+rake railties:install:migrations #copy gem's migrations to your rails_root/db/migrate/
 
 Example
 =======
