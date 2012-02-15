@@ -25,9 +25,14 @@ feature "deals feature", :js => true do
 
     click_button "Create"
     page.should have_content('Deal "Ror Mug Hot deal !" has been successfully created!')
+    click_link "Edit"
+    fill_in "List Price", :with => "40"
+    fill_in "Price", :with => "10"
+    click_button "Update"
   end
 
   scenario "admin can edit deal price" do
+    visit spree.admin_deals_path
     click_link "Edit"
     fill_in "List Price", :with => "40"
     fill_in "Price", :with => "30"
@@ -39,6 +44,11 @@ feature "deals feature", :js => true do
 
   context "when deal expires" do
     before do
+      visit spree.deals_path
+      click_link "Ror Mug Hot deal !"
+      click_button "Add To Cart"
+      complete_order
+
       Timecop.travel(1.week.from_now + 1.minutes)
       Delayed::Worker.new.work_off
     end
@@ -49,6 +59,22 @@ feature "deals feature", :js => true do
       visit spree.admin_deals_path
       click_button "Confirm"
       page.should have_content("Deal successfully complete")
+    end
+
+    scenario "admin can capture payment" do
+      visit spree.admin_deals_path
+      click_button "Confirm"
+      page.should have_content("Deal successfully complete")
+
+      click_link "Edit"
+
+      within "ul.sidebar[data-hook='admin_deal_tabs']" do
+        click_link "Orders"
+      end
+      page.should have_content("$20")
+
+      visit spree.admin_order_payments_path(Spree::Order.last)
+      click_button "Capture"
     end
   end
 

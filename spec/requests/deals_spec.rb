@@ -15,26 +15,6 @@ feature "deals feature", :js => true do
 
     visit spree.new_admin_deal_path
   end
-  let!(:address) { Factory(:address, :state => Spree::State.first) }
-
-  def complete_order
-    click_link "Checkout"
-
-    str_addr = "bill_address"
-    select "United States", :from => "order_#{str_addr}_attributes_country_id"
-    ['firstname', 'lastname', 'address1', 'city', 'zipcode', 'phone'].each do |field|
-      fill_in "order_#{str_addr}_attributes_#{field}", :with => "#{address.send(field)}"
-    end
-    select "#{address.state.name}", :from => "order_#{str_addr}_attributes_state_id"
-    check "order_use_billing"
-    click_button "Save and Continue"
-    click_button "Save and Continue"
-    choose('Credit Card')
-    fill_in "card_number", :with => "4111111111111111"
-    fill_in "card_code", :with => "123"
-    click_button "Save and Continue"
-    click_button "Place Order"
-  end
 
   context "there is a valid deal" do
     before do
@@ -107,7 +87,7 @@ feature "deals feature", :js => true do
       Timecop.travel(2.months.from_now)
       Delayed::Worker.new.work_off
       visit spree.deals_path
-      save_and_open_page
+
       # list price
       page.should_not have_content("$40")
       # discount price
@@ -118,6 +98,5 @@ feature "deals feature", :js => true do
       # page.should have_content("200 needed for the deal to go live!")
       Timecop.return
     end
-
   end
 end
