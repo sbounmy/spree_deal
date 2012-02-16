@@ -76,6 +76,11 @@ feature "deals feature", :js => true do
       visit spree.admin_order_payments_path(Spree::Order.last)
       click_button "Capture"
     end
+
+    scenario "shipping methods" do
+      visit spree.new_admin_shipping_method_path
+      save_and_open_page
+    end
   end
 
 end

@@ -43,6 +43,8 @@
 
 
 <% content_for :sidebar do %>
+  <%= render "spree/admin/deals/sidebar" %>
+
   <div class="box" data-hook="admin_orders_index_search">
     <h3><%= t(:search) %></h3>
     <%= form_for [:admin, @search] do |f| %>

@@ -9,20 +9,5 @@
 <% end %>
 
 <% content_for :sidebar do %>
-  <div id="deal_tab_summary" data-hook>
-    <h3 id="deal_number" data-hook><%= t(:deal) %> #<%= @deal.id %></h3>
-    <h5 id="deal_status" data-hook><%= t(:status) %>: <%# t(@deal.state, :scope => :deal_state) %></h5>
-    <br class="clear" />
-  </div>
-  <br class="clear" />
-
-  <ul class="sidebar" data-hook="admin_deal_tabs">
-    <li<%== ' class="active"' if controller.controller_name == 'deal' %>>
-      <%= link_to t(:deal), edit_admin_deal_url(@deal) %>
-    </li>
-    <li<%== ' class="active"' if controller.controller_name == 'orders' %>>
-      <%= link_to t(:orders), admin_deal_orders_url(@deal) %>
-    </li>
-  </ul>
-
+  <%= render "sidebar" %>
 <% end %>

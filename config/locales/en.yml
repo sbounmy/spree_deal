@@ -9,4 +9,6 @@ en:
     confirmation_email:
       subject: "Deal complete !"
   deal:
+    name: "Deal"
     complete: "Deal successfully complete"
+  deal_pending: "Deal pending"

@@ -1,4 +1,7 @@
 module Spree
+  # clearing states defined in core order.rb
+  Order.state_machines.clear
+
   Order.class_eval do
 
     scope :deal_pending, where(:state => "deal_pending")
