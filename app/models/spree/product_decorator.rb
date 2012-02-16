@@ -1,8 +1,7 @@
 Spree::Product.class_eval do
-  has_many  :deals
+  has_one :deal
+  has_one :active_deal, :conditions => ["spree_deals.state = 'active'"], :class_name => "Deal"
   delegate_belongs_to :master, :list_price=, :list_price
-
-  scope :active_deal, joins(:deals).where("deals.state = 'active'")
 
   def deal_percent
     (100 - (price * 100 / list_price)) *-1

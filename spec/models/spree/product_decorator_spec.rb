@@ -19,7 +19,7 @@ describe Spree::Product do
     end
   end
 
-  context "duplicate" do
+  context "#duplicate" do
     it "can take a prefix" do
       product = Factory(:product, :price => 70, :list_price => 100, :name => "Baggy", :sku => "007")
       dup = product.duplicate(:prefix => "DEAL OF ")
