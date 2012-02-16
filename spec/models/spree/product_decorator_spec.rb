@@ -18,4 +18,20 @@ describe Spree::Product do
       product.deal_amount.to_f.should == 0
     end
   end
+
+  context "duplicate" do
+    it "can take a prefix" do
+      product = Factory(:product, :price => 70, :list_price => 100, :name => "Baggy", :sku => "007")
+      dup = product.duplicate(:prefix => "DEAL OF ")
+      dup.name.should == "DEAL OF Baggy"
+      dup.sku.should == "DEAL OF 007"
+    end
+
+    it "default prefix to COPY OF" do
+      product = Factory(:product, :price => 70, :list_price => 100, :name => "Baggy", :sku => "007")
+      dup = product.duplicate
+      dup.name.should == "COPY OF Baggy"
+      dup.sku.should == "COPY OF 007"
+    end
+  end
 end

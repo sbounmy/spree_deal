@@ -21,7 +21,7 @@ feature "deals feature", :js => true do
     fill_in "Description", :with => "This is your last chance to get it at this price !"
     fill_in "Minimum Quantity", :with => 200
 
-    page.execute_script %Q{$('input[name$="deal[original_product_id]"]').val('#{@mug.id}').focus();}
+    page.execute_script %Q{$('input[name$="deal[product_id]"]').val('#{@mug.id}').focus();}
 
     click_button "Create"
     page.should have_content('Deal "Ror Mug Hot deal !" has been successfully created!')

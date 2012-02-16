@@ -1,17 +1,14 @@
 module Spree
   class Deal < ActiveRecord::Base
-    validates_presence_of :name, :original_product_id, :starts_at, :expires_at
-    validates_presence_of :product_id, :on => :update
     belongs_to :product, :dependent => :destroy
     delegate_belongs_to :product, :list_price, :price
 
-    before_validation :set_original_product_id
-    after_create :enqueue_expiration_job
-    before_create :duplicate_original_product, :if => :new_product?
+    validates_presence_of :name, :product_id, :starts_at, :expires_at
+    validate      :product_should_exist
 
+    before_create :duplicate_product
+    after_create :enqueue_expiration_job
     after_save   :enqueue_start_job, :if => "starts_at_changed? and !active?"
-    before_update :duplicate_original_product_and_destroy_old, :if => :new_product?
-    attr_accessor :original_product_id
 
     scope :active, where(:state => "active")
     scope :for, lambda { |product| where(:product_id => product.try(:id)) }
@@ -80,24 +77,13 @@ module Spree
       orders.collect(&:id)
     end
 
-    def set_original_product_id
-      self.original_product_id = original_product_id.nil? ? product_id : original_product_id
+    def product_should_exist
+      errors.add(:product_id, "Product doesnt exist") unless Product.exists?(product_id)
     end
 
-    def duplicate_original_product
-      self.product_id = Product.find(original_product_id).duplicate.id
-      self.original_product_id = nil
-    rescue
-      false
-    end
-
-    def new_product?
-      original_product_id && original_product_id != product_id
-    end
-
-    def duplicate_original_product_and_destroy_old
-      product.destroy
-      duplicate_original_product
+    def duplicate_product
+      prod = Product.find(product_id)
+      self.product_id = prod.duplicate(:prefix => "Deal ").id
     end
   end
 end

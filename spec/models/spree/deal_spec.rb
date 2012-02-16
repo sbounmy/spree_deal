@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Spree::Deal do
   it { should validate_presence_of :name }
-  it { should validate_presence_of :original_product_id }
+  it { should validate_presence_of :product_id }
   it { should validate_presence_of :starts_at }
   it { should validate_presence_of :expires_at }
   let(:deal) { Factory(:deal) }
@@ -14,24 +14,31 @@ describe Spree::Deal do
       expect { deal }.to change(Delayed::Job, :count).by(1)
     end
 
-    it "create a new product with duplicate_product_id" do
+    it "create a new product if product_id has no deal" do
       original = Factory(:product)
-      @deal = Spree::Deal.new(Factory.attributes_for(:deal).merge(:original_product_id => original.id))
+      @deal = Spree::Deal.new(Factory.attributes_for(:deal).merge(:product_id => original.id))
       expect { @deal.save! }.to change(Spree::Product, :count).by(1)
       @deal.product.should_not be_nil
       @deal.product.should_not == original
     end
 
     it "is not valid with invalid duplicate_product_id" do
-      original = Factory(:product)
-      @deal = Spree::Deal.new(Factory.attributes_for(:deal).merge(:original_product_id => 0))
+      @deal = Spree::Deal.new(Factory.attributes_for(:deal).merge(:product_id => 0))
       expect { @deal.save }.to_not change(Spree::Product, :count)
       @deal.new_record?.should be_true
       @deal.product.should be_nil
     end
 
+    it "set product prefix sku and name" do
+      original = Factory(:product)
+      @deal = Factory(:deal, :product_id => original.id)
+      @deal.save!
+      @deal.product.name.should =~ /Deal Product/
+      @deal.product.sku.should =~ /Deal /
+    end
+
     context "when starts_at in the future" do
-      let(:deal_attrs) { Factory.attributes_for(:deal, :starts_at => 1.day.from_now, :original_product_id => Factory(:product).id) }
+      let(:deal_attrs) { Factory.attributes_for(:deal, :starts_at => 1.day.from_now, :product_id => Factory(:product).id) }
       it "pushes a second job" do
         expect { Spree::Deal.create(deal_attrs) }.to change(Delayed::Job, :count).by(2)
       end
@@ -62,16 +69,17 @@ describe Spree::Deal do
   end
 
   describe "on update" do
-    it "destroy product deal when original_product_id changes" do
+    it "destroy product deal when product_id changes" do
+      pending "should we allow this ?"
       deal and product
       other_product = Factory(:product)
-      expect { deal.update_attributes(:original_product_id => other_product.id) }.should_not change(Spree::Product, :count)
+      expect { deal.update_attributes(:product_id => other_product.id) }.should_not change(Spree::Product, :count)
       deal.product.should_not == product
     end
 
-    it "does nothing when same original_product_id" do
+    it "does nothing when same product_id" do
       deal and product
-      expect { deal.update_attributes(:original_product_id => product.id) }.should_not change(Spree::Product, :count)
+      expect { deal.update_attributes(:product_id => product.id) }.should_not change(Spree::Product, :count)
       deal.product.should == product
     end
   end
