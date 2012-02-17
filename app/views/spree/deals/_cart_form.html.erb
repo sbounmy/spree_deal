@@ -13,5 +13,12 @@
       <span class="value" itemprop="price"><%= time_ago_in_words deal.expires_at, :precision => 0 %></span>
       <span class= "label">Time left</span>
     </li>
+    <li>
+      <span class="value" itemprop="price"><%= deal.left_quantity %></span>
+      <span class= "label">Units needed</span>
+    </li>
+  </ul>
+
+  <div>
   </div>
 <% end %>
