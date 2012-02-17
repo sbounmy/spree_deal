@@ -5,3 +5,27 @@
   text-decoration: line-through;
   color: red;
 }
+
+#product-price {
+  float:left;
+  margin-right: 10px;
+}
+
+ul#deal_info {
+  padding-top: 20px;
+}
+
+ul#deal_info li {
+  float:left;
+  width: 80px;
+  min-height: 50px;
+  text-align: center;
+}
+
+ul#deal_info li span.value{
+  display: block;
+}
+
+ul#products li .price {
+  display: inline-block;
+}

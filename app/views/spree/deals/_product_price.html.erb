@@ -1,0 +1,7 @@
+<% _product = defined?(product) ? product : @product %>
+<% if deal = @deal || _product.active_deal %>
+  <span class="price list" itemprop="price"><%= number_to_currency deal.list_price %></span>
+  <span class="price selling" itemprop="price"><%= number_to_currency deal.price %></span>
+<% else %>
+  <span class="price selling" itemprop="price"><%= number_to_currency _product.price %></span>
+<% end %>

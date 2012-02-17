@@ -1,8 +1,17 @@
 <% _product = defined?(product) ? product : @product %>
 <% if deal = @deal || _product.active_deal %>
-  <span class="price selling" itemprop="price"><%= number_to_currency deal.price %></span>
-  <span class="price list" itemprop="price"><%= number_to_currency deal.list_price %></span>
-  <span class="price selling" itemprop="price"><%= number_to_percentage deal.percent, :precision => 0 %></span>
-<% else %>
-  <span class="price selling" itemprop="price"><%= number_to_currency _product.price %></span>
+  <ul id="deal_info" class="clearfix">
+    <li>
+      <span class="price list value" itemprop="price"><%= number_to_currency deal.list_price %></span>
+      <span class= "label">List price</span>
+    </li>
+    <li>
+      <span class="price selling value" itemprop="price"><%= number_to_percentage deal.percent, :precision => 0 %></span>
+      <span class= "label">Discount</span>
+    </li>
+    <li>
+      <span class="value" itemprop="price"><%= time_ago_in_words deal.expires_at, :precision => 0 %></span>
+      <span class= "label">Time left</span>
+    </li>
+  </div>
 <% end %>
