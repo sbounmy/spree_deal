@@ -1,7 +1,7 @@
 /*
  *= require store/spree_core
 */
-.price.list {
+.price.list, ul#products .price.list {
   text-decoration: line-through;
   color: red;
 }
