@@ -1,9 +1,9 @@
 module Spree
   # clearing states defined in core order.rb
-  Order.state_machines.clear
 
   Order.class_eval do
-
+    StateMachine::Machine.ignore_method_conflicts = true
+    state_machines.clear
     scope :deal_pending, where(:state => "deal_pending")
 
     # Additional state 'pending', other are copy paste from core/app/models/spree/order.rb
