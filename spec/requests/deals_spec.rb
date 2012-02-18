@@ -98,5 +98,14 @@ feature "deals feature", :js => true do
       # page.should have_content("200 needed for the deal to go live!")
       Timecop.return
     end
+
+    it "empties cart on complete checkout" do
+      visit spree.deals_path
+      click_link "Ror Mug Hot deal !"
+      click_button "Add To Cart"
+
+      complete_order
+      find('#link-to-cart').find('a').text.should == "CART: (EMPTY)"
+    end
   end
 end
