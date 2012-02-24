@@ -29,3 +29,7 @@ ul#deal_info li span.value{
 ul#products li .price {
   display: inline-block;
 }
+
+table.order-summary tbody tr td a {
+color: #00ADEE;
+}

@@ -99,13 +99,37 @@ feature "deals feature", :js => true do
       Timecop.return
     end
 
-    it "empties cart on complete checkout" do
+    scenario "cart should empty on complete checkout (deal_pending state)" do
       visit spree.deals_path
       click_link "Ror Mug Hot deal !"
       click_button "Add To Cart"
 
       complete_order
       find('#link-to-cart').find('a').text.should == "CART: (EMPTY)"
+    end
+
+    scenario "customer is able to track his deal" do
+      visit spree.deals_path
+      click_link "Ror Mug Hot deal !"
+      click_button "Add To Cart"
+
+      complete_order
+      visit spree.order_path(Spree::Order.last)
+      page.should have_content "Deal RoR Mug"
+      page.should have_content "active"
+
+      # deal expires
+      Timecop.travel(2.months.from_now) do
+        Delayed::Worker.new.work_off
+        visit spree.order_path(Spree::Order.last)
+        page.should have_content "pending"
+
+        # deal confirmed
+        Spree::Deal.last.confirm!
+        visit spree.order_path(Spree::Order.last)
+        page.should have_content "valid"
+      end
+
     end
   end
 end

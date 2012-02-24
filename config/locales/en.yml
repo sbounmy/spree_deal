@@ -12,3 +12,17 @@ en:
     name: "Deal"
     complete: "Deal successfully complete"
   deal_pending: "Deal pending"
+  inventory_unit_state:
+    # keys correspond to InventoryUnit state names:
+    base:
+      sold: ready
+      shipped: shipped
+      backordered: backordered
+    deal:
+      complete:
+        sold: ready
+        shipped: shipped
+        backordered: valid
+      void: void
+      expired: pending
+      active: active

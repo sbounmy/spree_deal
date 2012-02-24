@@ -1,0 +1,3 @@
+<td data-hook="order_item_state">
+  <%= t_unit_state(@unit) if @unit = item.variant.inventory_units.where(:order_id => @order.id).first %>
+</td>
